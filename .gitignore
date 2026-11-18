@@ -1,0 +1,4 @@
+__pycache__/
+*.pyc
+03_Ma_nguon/data/
+03_Ma_nguon/results/*_last.pt
