@@ -195,7 +195,7 @@ pagebreak()
 # ---------------- TÓM TẮT ----------------
 H("Tóm tắt", 1)
 P("Giai đoạn đầu của đề tài so sánh học ít mẫu (Prototypical Network) và học chuyển giao (Fine-tuning) khi huấn luyện trên ảnh cà chua, khoai tây (PlantVillage) rồi đánh giá trên các lớp bệnh lá sầu riêng chưa từng thấy. Độ chính xác chỉ đạt khoảng 30–54%, quá thấp để áp dụng thực tế. Báo cáo này trình bày phần làm lại: thu hẹp đề tài về nhận dạng bệnh lá sầu riêng và thay PlantVillage bằng hai bộ dữ liệu lá sầu riêng, gồm bộ Kaggle (4.437 ảnh, 5 lớp) và bộ Mendeley (2.595 ảnh, 6 lớp).")
-P("Nhóm kiểm tra sự trùng lặp giữa hai bộ (121 ảnh Blight trùng nhau, cộng 2 ảnh trùng nội bộ) và loại chúng trước khi huấn luyện. Mô hình MobileNetV2 pretrained ImageNet được fine-tune toàn mạng theo ba cấu hình: chỉ Kaggle, chỉ Mendeley và gộp hai bộ. Trên tập test cùng nguồn, ba cấu hình đạt 93,7%, 95,4% và 94,5% (mô hình gộp: 94,7% trên Kaggle, 94,0% trên Mendeley). Tuy nhiên khi đổi nguồn ảnh, mô hình chỉ huấn luyện trên Mendeley chỉ đạt 32,0% trên ảnh Kaggle, còn mô hình chỉ huấn luyện trên Kaggle đạt 76,2% trên ảnh Mendeley (4 lớp chung). Kết quả cho thấy khoảng cách giữa các nguồn ảnh là nguyên nhân chính khiến mô hình khó dùng ngoài thực tế, và việc gộp nhiều nguồn là một hướng khắc phục.")
+P("Nhóm kiểm tra sự trùng lặp giữa hai bộ (121 ảnh Blight trùng nhau, cộng 2 ảnh trùng nội bộ) và loại chúng trước khi huấn luyện. Mô hình MobileNetV2 pretrained ImageNet được fine-tune toàn mạng theo ba cấu hình: chỉ Kaggle, chỉ Mendeley và gộp hai bộ. Trên tập test cùng nguồn, ba cấu hình đạt 93,7%, 96,1% và 94,5% (mô hình gộp: 94,7% trên Kaggle, 94,0% trên Mendeley). Tuy nhiên khi đổi nguồn ảnh, mô hình chỉ huấn luyện trên Mendeley chỉ đạt 32,0% trên ảnh Kaggle, còn mô hình chỉ huấn luyện trên Kaggle đạt 76,2% trên ảnh Mendeley (4 lớp chung). Kết quả cho thấy khoảng cách giữa các nguồn ảnh là nguyên nhân chính khiến mô hình khó dùng ngoài thực tế, và việc gộp nhiều nguồn là một hướng khắc phục.")
 P("Kết quả few-shot (1, 5, 10 ảnh mẫu mỗi lớp) trên Mendeley đạt 56,8%, 71,9% và 76,7% khi dùng đặc trưng từ mô hình huấn luyện trên Kaggle. Đề tài kèm một ứng dụng minh họa Streamlit. Báo cáo nêu rõ các giới hạn: chưa có nguồn dữ liệu thứ ba độc lập, ngưỡng độ tin cậy chưa loại được ảnh ngoài phạm vi, và chỉ chạy một seed.")
 P("**Từ khóa:** nhận dạng bệnh lá sầu riêng, học chuyển giao, MobileNetV2, dịch chuyển miền dữ liệu, đánh giá ngoài miền.", indent=False)
 pagebreak()
@@ -217,7 +217,7 @@ H("1.4. Phạm vi và giới hạn", 2)
 P("Đề tài chỉ xét ảnh lá sầu riêng thuộc các lớp có trong hai bộ dữ liệu. Ứng dụng không có cơ chế loại ảnh ngoài phạm vi đáng tin cậy. Mọi kết quả chạy với một seed (42) trên CPU, nên chưa có khoảng tin cậy giữa các lần huấn luyện. Không có nguồn dữ liệu thứ ba nên chưa kiểm tra được mô hình gộp ngoài miền.")
 H("1.5. Đóng góp chính", 2)
 BUL(["Phát hiện và loại 121 ảnh Blight trùng nhau giữa hai bộ dữ liệu, tránh rò rỉ khi đánh giá.",
-     "Thiết kế phép đánh giá ngoài miền hai chiều trên 4 lớp chung, cho thấy mô hình huấn luyện trên một nguồn có thể giảm từ 95% xuống 32%.",
+     "Thiết kế phép đánh giá ngoài miền hai chiều trên 4 lớp chung, cho thấy mô hình huấn luyện trên một nguồn có thể giảm từ 96% xuống 32%.",
      "Huấn luyện mô hình gộp 7 lớp đạt 94–95% trên cả hai nguồn với một mô hình duy nhất.",
      "Đối chứng few-shot giữa đặc trưng huấn luyện trên Kaggle và đặc trưng chỉ pretrain ImageNet.",
      "Trình bày trung thực các giới hạn và hướng khắc phục."])
@@ -250,7 +250,7 @@ H("3.3. Kiểm tra ảnh trùng lặp", 2)
 P("Để tránh rò rỉ dữ liệu, nhóm so sánh từng cặp ảnh bằng độ tương quan giữa phiên bản xám 24×24 đã chuẩn hóa, cách này vẫn nhận ra cùng một ảnh dù khác kích thước. Kết quả tách bạch: 121 ảnh Mendeley khớp (tương quan ≥ 0,98) với ảnh trong bộ Kaggle, trong khi mọi cặp còn lại đều ≤ 0,8. Nhóm thử thêm lật ngang, lật dọc và xoay 90° và không tìm thấy cặp nào khác.")
 BUL(["Cả 121 ảnh trùng đều thuộc lớp **Blight** và nằm trong tập train của Kaggle. Phía Mendeley chúng nằm ở train (89), val (15) và test (17).",
      "Bên trong Kaggle có 1 nhóm ảnh trùng chính xác (SHA-256) và vài cặp gần trùng; sau khi lọc có 2 ảnh bị loại.",
-     "Bên trong Mendeley có 35 ảnh gần trùng ảnh khác (12 ở train, 10 ở val, 13 ở test); nhóm giữ nguyên ở train nhưng loại khỏi val và test."])
+     "Bên trong Mendeley có 35 ảnh gần trùng ảnh khác (12 ở train, 10 ở val, 13 ở test); nhóm giữ nguyên ở train nhưng loại khỏi val và test của mô hình gộp và của bước đánh giá lại mô hình chỉ Mendeley (lần huấn luyện đầu của mô hình chỉ Mendeley chọn epoch trên tập val chưa lọc, 387 ảnh)."])
 TABLE("Số ảnh sau khi khử trùng", ["Nguồn", "Train", "Val", "Test", "Tổng"],
       [["Kaggle (5 lớp)", "2.983", "443", "888", "4.314"], ["Mendeley (6 lớp)", "1.814", "377", "381", "2.572"]], widths=[5, 2.5, 2.5, 2.5, 2.5])
 H("3.4. Tiền xử lý và tăng cường dữ liệu", 2)
@@ -285,14 +285,14 @@ TABLE("Loss huấn luyện và accuracy validation theo epoch (%)", ["Epoch", "K
        ["3", "0,390", "94,1", "0,353", "94,3", "0,466", "93,4"], ["4", "0,362", "95,0", "0,322", "95,1", "0,421", "94,5"],
        ["5", "0,327", "93,9", "0,304", "95,9", "0,374", "95,4"], ["6", "0,301", "94,4", "0,294", "95,6", "0,359", "95,2"]], size=10,
       widths=[1.6, 2.4, 2.2, 2.6, 2.4, 2.2, 2.0])
-P("Ghi chú: nhóm chỉ ghi lại loss huấn luyện và accuracy validation, không ghi loss validation. Vì vậy biểu đồ không cho thấy trực tiếp mức quá khớp; chỉ có thể nhận xét qua accuracy validation, vốn ổn định hoặc tăng nhẹ.", italic=True, indent=False)
+P("Ghi chú: accuracy validation của mô hình chỉ Mendeley tính trên toàn bộ tập val gốc (387 ảnh, chưa loại ảnh gần trùng). Nhóm chỉ ghi lại loss huấn luyện và accuracy validation, không ghi loss validation. Vì vậy biểu đồ không cho thấy trực tiếp mức quá khớp; chỉ có thể nhận xét qua accuracy validation, vốn ổn định hoặc tăng nhẹ.", italic=True, indent=False)
 H("5.2. Kết quả trong miền", 2)
-TABLE("Kết quả trên tập test cùng nguồn", ["Mô hình", "Tập test", "Số lớp", "Accuracy", "Macro F1"],
-      [["Chỉ Kaggle", "Kaggle", "5", "93,7%", "0,936"], ["Chỉ Mendeley", "Mendeley", "6", "95,4%", "0,952"],
-       ["Gộp 2 bộ", "Kaggle", "5 (trong 7)", "94,7%", "–"], ["Gộp 2 bộ", "Mendeley", "6 (trong 7)", "94,0%", "0,937"], ["Gộp 2 bộ", "Cả hai", "7", "94,5%", "0,939"]],
-      widths=[3.5, 3, 3, 3, 3])
+TABLE("Kết quả trên tập test cùng nguồn (một seed; khoảng tin cậy Wilson 95% chỉ tính sai số do cỡ mẫu test)", ["Mô hình", "Tập test", "Số ảnh test", "Accuracy", "Khoảng tin cậy 95%", "Macro F1"],
+      [["Chỉ Kaggle", "Kaggle (5 lớp)", "888", "93,7%", "91,9–95,1%", "0,936"], ["Chỉ Mendeley", "Mendeley (6 lớp)", "381", "96,1%", "93,6–97,6%", "0,959"],
+       ["Gộp 2 bộ", "Kaggle", "888", "94,7%", "93,0–96,0%", "–"], ["Gộp 2 bộ", "Mendeley", "381", "94,0%", "91,1–95,9%", "0,937"], ["Gộp 2 bộ", "Cả hai", "1.269", "94,5%", "–", "0,939"]],
+      widths=[2.8, 3.2, 2.2, 2.2, 3.2, 2.2], size=10)
 FIGURE("indomain.png", "Accuracy trong miền của các mô hình.", 12.5)
-P("Cả ba mô hình đạt 93–95% trên tập test cùng nguồn. Mô hình riêng Mendeley cao nhất (95,4%) vì tập test của nó có ít lớp hơn và cùng phong cách ảnh với tập huấn luyện. Mô hình gộp thấp hơn một chút trên Mendeley (94,0%) nhưng không còn thua hẳn khi gặp ảnh kiểu Kaggle (Mục 5.4). Macro F1 của riêng Kaggle trong mô hình gộp không báo cáo vì hai lớp Colletotrichum và Rhizoctonia không có ảnh trong tập test Kaggle.")
+P("Cả ba mô hình đạt 93–96% trên tập test cùng nguồn. Các khoảng tin cậy chồng lên nhau (ví dụ 93,0–96,0% và 91,1–95,9% của mô hình gộp), nên chênh lệch giữa các mô hình chưa có ý nghĩa thống kê. Mô hình riêng Mendeley cao nhất (96,1%, tính trên 381 ảnh test sau khi loại 13 ảnh gần trùng nội bộ) vì tập test của nó có ít lớp hơn và cùng phong cách ảnh với tập huấn luyện. Mô hình gộp thấp hơn một chút trên Mendeley (94,0%) nhưng không còn thua hẳn khi gặp ảnh kiểu Kaggle (Mục 5.4). Macro F1 của riêng Kaggle trong mô hình gộp không báo cáo vì hai lớp Colletotrichum và Rhizoctonia không có ảnh trong tập test Kaggle.")
 H("5.3. Phân tích lỗi", 2)
 FIGURE("cm_merged_kaggle.png", "Ma trận nhầm lẫn của mô hình gộp trên tập test Kaggle.", 11)
 FIGURE("cm_merged_mendeley.png", "Ma trận nhầm lẫn của mô hình gộp trên tập test Mendeley.", 11)
@@ -305,7 +305,7 @@ FIGURE("crossdomain.png", "Accuracy ngoài miền, tổng và theo lớp.", 15.5
 P("Mô hình huấn luyện trên Mendeley gần như sụp đổ khi gặp ảnh Kaggle: nó gán nhãn Blight cho 98% ảnh Blight nhưng chỉ nhận đúng 10–12% ảnh Algal, Healthy và Phomopsis, phần lớn còn lại bị gán nhầm là Blight (ví dụ 806 trên 976 ảnh Healthy). Chiều ngược lại tốt hơn (76,2%) nhưng Blight chỉ đạt 57% và Phomopsis 45%.")
 FIGURE("healthy_compare.png", "Ảnh lá khỏe mạnh ở hai bộ: ảnh Mendeley (hàng trên) tối hơn, chụp cận; ảnh Kaggle (hàng dưới) sáng hơn, nhiều lá.", 15)
 P("Hình 8 cho thấy phong cách chụp hai bộ khác nhau rõ rệt. Nhóm cho rằng mô hình học theo ánh sáng và bối cảnh chụp của từng nguồn thay vì chỉ dấu hiệu bệnh. Đây là giả thuyết dựa trên quan sát và kết quả trên, chưa được kiểm chứng riêng (ví dụ bằng việc chuẩn hóa màu hoặc phân tích vùng ảnh mô hình chú ý).")
-P("Ý nghĩa thực tế: độ chính xác 95% trong miền không đảm bảo mô hình hoạt động tốt với ảnh của người dùng chụp ở vườn khác. Bộ Kaggle đa dạng hơn nên chuyển sang Mendeley tốt hơn chiều ngược lại.")
+P("Ý nghĩa thực tế: độ chính xác 94–96% trong miền không đảm bảo mô hình hoạt động tốt với ảnh của người dùng chụp ở vườn khác. Bộ Kaggle đa dạng hơn nên chuyển sang Mendeley tốt hơn chiều ngược lại.")
 H("5.5. Kết quả few-shot", 2)
 TABLE("Few-shot trên Mendeley (6-way, 600 episode), accuracy %", ["Phương pháp", "1 mẫu", "5 mẫu", "10 mẫu"],
       [["Prototype, backbone Kaggle", "56,8", "68,8", "71,0"], ["Hồi quy logistic, backbone Kaggle", "56,8", "71,9", "76,7"],
@@ -314,7 +314,7 @@ FIGURE("fewshot.png", "Few-shot trên Mendeley; thanh sai số là khoảng tin 
 P("Ở 1 mẫu, hồi quy logistic cần ít nhất hai mẫu mỗi lớp nên dùng lại prototype, vì vậy hai dòng giống nhau. Đặc trưng từ mô hình huấn luyện trên Kaggle giúp rõ rệt ở 1 mẫu (tăng khoảng 17 điểm) và khá ở 5 mẫu (tăng khoảng 7 điểm so với chỉ ImageNet), nhưng ở 10 mẫu chỉ hơn khoảng 4,6 điểm. Khi tách theo nhóm lớp, lợi ích đến chủ yếu từ 4 lớp chung với Kaggle (78,0% so với 70,7% ở 10 mẫu). Với hai lớp chỉ có ở Mendeley, hai backbone gần như hòa (74,1% so với 75,0%); do chỉ có 2 lớp nên số đo này nhiễu. So với kết quả giai đoạn trước (khoảng 54% ở 10 mẫu), mức tăng chủ yếu đến từ backbone MobileNetV2 và ảnh 224×224 chứ không riêng từ bộ dữ liệu Kaggle.")
 H("5.6. Những điều số liệu chưa chứng minh", 2)
 BUL(["Chưa chứng minh mô hình gộp dùng được với ảnh của nguồn thứ ba; chỉ có bằng chứng ngoài miền cho mô hình đơn nguồn.",
-     "Chỉ chạy một seed nên chưa biết mức dao động giữa các lần huấn luyện; chênh lệch dưới 1–2 điểm (ví dụ 94,0% và 95,4%) không nên diễn giải mạnh.",
+     "Chỉ chạy một seed nên chưa biết mức dao động giữa các lần huấn luyện; chênh lệch dưới 1–2 điểm (ví dụ 94,0% và 96,1%) không nên diễn giải mạnh.",
      "Giả thuyết về ánh sáng và nền chưa được kiểm chứng riêng.",
      "Các lớp Colletotrichum, Rhizoctonia chỉ có một nguồn nên khả năng tổng quát hóa của hai lớp này chưa được kiểm tra."])
 
@@ -349,7 +349,7 @@ P("Nhóm sử dụng trợ lý AI (Claude) để hỗ trợ viết mã, chạy t
 # ---------------- 8 KẾT LUẬN ----------------
 H("8. Kết luận", 1)
 P("Đề tài đã thu gọn về nhận dạng bệnh lá sầu riêng và thay dữ liệu PlantVillage bằng hai bộ ảnh lá sầu riêng. Sau khi loại 121 ảnh Blight trùng giữa hai bộ, mô hình MobileNetV2 fine-tune đạt 93,7% (Kaggle), 95,4% (Mendeley) và 94,5% (gộp 2 bộ) trên tập test cùng nguồn, cao hơn nhiều so với 30–54% của giai đoạn trước.")
-P("Điểm quan trọng hơn là phép thử ngoài miền: mô hình chỉ học một nguồn có thể giảm xuống 32% khi gặp ảnh nguồn khác, nên con số 95% không nói lên độ chính xác thực tế. Gộp nhiều nguồn giúp một mô hình xử lý được cả hai kiểu ảnh, nhưng độ tổng quát hóa ra nguồn thứ ba vẫn cần kiểm chứng. Trong few-shot, đặc trưng học từ dữ liệu sầu riêng giúp rõ nhất ở 1–5 ảnh mẫu và với các lớp chung giữa hai bộ. Các bước tiếp theo là thêm nguồn dữ liệu, học bán giám sát trên ảnh chưa gán nhãn và bổ sung cơ chế loại ảnh ngoài phạm vi.")
+P("Điểm quan trọng hơn là phép thử ngoài miền: mô hình chỉ học một nguồn có thể giảm xuống 32% khi gặp ảnh nguồn khác, nên con số 94–96% không nói lên độ chính xác thực tế. Gộp nhiều nguồn giúp một mô hình xử lý được cả hai kiểu ảnh, nhưng độ tổng quát hóa ra nguồn thứ ba vẫn cần kiểm chứng. Trong few-shot, đặc trưng học từ dữ liệu sầu riêng giúp rõ nhất ở 1–5 ảnh mẫu và với các lớp chung giữa hai bộ. Các bước tiếp theo là thêm nguồn dữ liệu, học bán giám sát trên ảnh chưa gán nhãn và bổ sung cơ chế loại ảnh ngoài phạm vi.")
 
 # ---------------- TÀI LIỆU THAM KHẢO ----------------
 H("Tài liệu tham khảo", 1)

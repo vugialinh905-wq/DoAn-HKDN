@@ -33,3 +33,6 @@ Máy không có GPU: mỗi epoch khoảng 4–13 phút trên CPU.
 ## Lưu ý
 - Báo cáo còn ô `[Nhóm điền ...]` ở bảng phân công công việc, cần điền trước khi nộp.
 - Số liệu ngưỡng độ tin cậy (slide 15, Bảng 11) lấy từ một lần chạy thử, chưa có file kết quả lưu kèm.
+
+## Thí nghiệm dở dang
+`03_Ma_nguon/semisup.py` (học bán giám sát) mới chạy xong vòng 0 và nhánh đối chứng; hai nhánh chính (tự gán nhãn, người gán lại) và 3 seed thêm cho mô hình gộp chưa chạy. Không dùng kết quả bán giám sát để kết luận.

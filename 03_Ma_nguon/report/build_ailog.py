@@ -47,7 +47,7 @@ P("(AI DEVELOPMENT LOG) – GIAI ĐOẠN LÀM LẠI, PHIÊN 43–55", True, "c",
 P("Đề tài: Nhận dạng bệnh trên lá sầu riêng bằng học chuyển giao: huấn luyện trên hai bộ dữ liệu và đánh giá ngoài miền", align="c")
 P("Sinh viên thực hiện: Vũ Gia Linh (MSSV: 070305004702); Lê Ngọc Bích Loan (MSSV: 060305003162)")
 P("Công cụ AI sử dụng: " + TOOL + ". Công cụ có quyền đọc/ghi tệp và chạy lệnh trên máy của sinh viên trong thư mục được cấp.")
-P("Phạm vi ghi nhận: 13 phiên làm việc (Phiên 43–55) trong cuộc trò chuyện ngày 17–18/11/2026, tiếp nối nhật ký 42 phiên trước (AI_Development_Log_v2.docx).")
+P("Phạm vi ghi nhận: 14 phiên làm việc (Phiên 43–56) trong cuộc trò chuyện ngày 17–18/11/2026, tiếp nối nhật ký 42 phiên trước (AI_Development_Log_v2.docx).")
 P("Cách làm việc: sinh viên đặt mục tiêu, chọn hướng đi và ra từng lệnh; công cụ AI thực hiện phần soạn mã, chạy thực nghiệm và soạn thảo văn bản theo lệnh đó và báo kết quả để sinh viên quyết định bước tiếp theo. "
   "Cần nói rõ: toàn bộ mã nguồn mới, các biểu đồ và bản nháp báo cáo, slide trong giai đoạn này do công cụ AI soạn thảo và chạy; sinh viên chịu trách nhiệm về quyết định, nội dung nộp và phải tự kiểm tra lại (xem Phụ lục A).")
 P("Các prompt được chuẩn hóa về văn phong viết, giữ nguyên nội dung yêu cầu thực tế. Các ô [SV xác nhận] là việc chỉ sinh viên mới biết hoặc mới thực hiện được, cần tự điền trước khi nộp.", italic=True)
@@ -105,7 +105,7 @@ SESS = [
   "Huấn luyện trực tiếp trên bộ Mendeley (6 lớp).",
   "Yêu cầu: Train trên Mendeley.",
   "train_base.py (thêm tùy chọn --source) (kho: " + C1 + ").",
-  "Mở rộng train_base.py cho nhiều nguồn, chạy 6 epoch (khoảng 4 phút/epoch): test 95,43%, macro F1 0,952; lỗi chủ yếu ở Blight và Colletotrichum. Công cụ lưu ý đây mới là kết quả cùng nguồn.",
+  "Mở rộng train_base.py cho nhiều nguồn, chạy 6 epoch (khoảng 4 phút/epoch): lần đầu test 95,43% trên 394 ảnh (chưa loại ảnh gần trùng do lỗi kiểu dữ liệu), được đánh giá lại ở Phiên 56; lỗi chủ yếu ở Blight và Colletotrichum. Công cụ lưu ý đây mới là kết quả cùng nguồn.",
   "Q6: tiếp tục bước kiểm tra ngoài miền.",
   "Chạy thử nhanh trước khi chạy thật. [SV xác nhận] đã xem ma trận nhầm lẫn."),
  ("Phiên 49 — Kiểm tra ngoài miền", "18/11/2026",
@@ -158,6 +158,13 @@ SESS = [
   "Q9: sinh viên giữ lại tài liệu ôn tập, điền bảng phân công, xác nhận các ô [SV xác nhận] và kiểm tra tài liệu tham khảo.",
   "Kiểm tra mục lục bằng ảnh xuất ra từ Word. [SV xác nhận] đã đọc nhật ký này và xác nhận nội dung đúng với thực tế."),
 ]
+SESS.append(("Phiên 56 — Khoảng tin cậy, sửa lỗi số liệu và thí nghiệm bán giám sát (chưa hoàn chỉnh)", "18/11/2026",
+  "Đối chiếu bài với ý thầy, tính khoảng tin cậy, chạy thí nghiệm học bán giám sát theo gợi ý của thầy và chạy thêm seed.",
+  "Yêu cầu: đối chiếu với những gì thầy nói và làm học bán giám sát trước; hỏi đã đủ khoảng tin cậy chưa và số liệu mới đã tăng chưa. Sau đó yêu cầu chạy thêm 3 seed cho mô hình gộp, hỏi có thật sự cần không, chọn giữ nguyên, rồi đổi ý: chạy xong đối chứng vòng 3 thì dừng vì không có thời gian chờ, và xin lời nhắc để phiên sau tiếp tục.",
+  "semisup.py, ci_table.py, eval_mendeley_filtered.py, results/semisup_result.json, results/ci_existing.json, results/mendeley_test_filtered.json.",
+  "Tính khoảng tin cậy Wilson 95% cho các accuracy đã báo cáo (chỉ phản ánh cỡ mẫu test, không phản ánh dao động giữa các lần huấn luyện). Phát hiện lỗi của công cụ: mô hình chỉ Mendeley ở Phiên 48 được test trên 394 ảnh thay vì 381 ảnh đã lọc; đánh giá lại cho 96,06% (macro F1 0,959) và sửa báo cáo, slide, biểu đồ. Thí nghiệm bán giám sát (4 lớp chung, huấn luyện Mendeley, 1.200 ảnh Kaggle không nhãn) chỉ chạy xong vòng 0 và nhánh đối chứng: Kaggle 35,0% (vòng 0), 35,0%, 36,7%, 40,3% (đối chứng vòng 1–3). Hai nhánh chính (tự gán nhãn và người gán lại) chưa chạy; 3 seed thêm chưa chạy.",
+  "Q10: dừng thí nghiệm sau đối chứng vòng 3 do hạn chế thời gian; các phần chưa chạy ghi là việc dở dang, không đưa kết luận về hiệu quả của học bán giám sát vào báo cáo.",
+  "Nhánh đối chứng tự thay đổi 5 điểm trên Kaggle dù không thêm dữ liệu, cho thấy dao động giữa các vòng huấn luyện đáng kể. [SV xác nhận] đã đọc lại kết quả và đồng ý với quyết định dừng."))
 for title, date, goal, prompt, files, result, dec, ver in SESS:
     P(title, True, size=13)
     L("Công cụ", TOOL); L("Ngày", date); L("Mục tiêu", goal); L("Prompt đã sử dụng", prompt)

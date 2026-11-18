@@ -244,12 +244,12 @@ takeaway(s, "Loss từ 0,68–0,88 xuống 0,29–0,36 sau 6 epoch; chưa ghi lo
 notes(s, "Đây là biểu đồ loss huấn luyện của ba mô hình. Bên trái là loss cross-entropy trên tập huấn luyện sau mỗi epoch: cả ba giảm đều từ khoảng 0,7 đến 0,9 ở epoch một xuống khoảng 0,3 đến 0,36 ở epoch sáu. Mô hình gộp có loss cao hơn vì dùng tăng cường màu mạnh hơn và có nhiều lớp hơn. Bên phải là accuracy trên tập validation, tăng từ khoảng 90 phần trăm lên 94 đến 96 phần trăm và đi ngang ở các epoch cuối. Cần nói thật là nhóm chỉ ghi loss huấn luyện, không ghi loss validation, nên chưa thể vẽ đường cong để kết luận về quá khớp; chỉ có accuracy validation ổn định làm bằng chứng gián tiếp.")
 
 # ================= 9. IN-DOMAIN =================
-s = new("04 · KẾT QUẢ", "Trong miền: 93–95% trên tập test cùng nguồn")
-col_chart(s, .6, 1.85, 7.4, 4.4, ["Chỉ Kaggle\ntest Kaggle", "Chỉ Mendeley\ntest Mendeley", "Gộp\ntest Kaggle", "Gộp\ntest Mendeley"], [("Accuracy", [93.7, 95.4, 94.7, 94.0])],
+s = new("04 · KẾT QUẢ", "Trong miền: 93–96% trên tập test cùng nguồn")
+col_chart(s, .6, 1.85, 7.4, 4.4, ["Chỉ Kaggle\ntest Kaggle", "Chỉ Mendeley\ntest Mendeley", "Gộp\ntest Kaggle", "Gộp\ntest Mendeley"], [("Accuracy", [93.7, 96.1, 94.7, 94.0])],
           [GREEN], None, 80, 100, '0.0"%"', vary=[GREEN, AMBER, TEAL, TEAL], ytitle="Accuracy (%)")
-bullets(s, 8.4, 2.0, 4.3, 4.0, ["Cả ba mô hình đạt 93–95% trên ảnh cùng nguồn", "Mô hình gộp: 94,5% tổng, macro F1 0,939", "Chênh lệch dưới 1–2 điểm chưa nên diễn giải mạnh (chỉ một seed)", "Cao hơn nhiều so với 30–54% của giai đoạn trước"], size=17, gap=12)
+bullets(s, 8.4, 2.0, 4.3, 4.0, ["Cả ba mô hình đạt 93–96% trên ảnh cùng nguồn", "Mô hình gộp: 94,5% tổng, macro F1 0,939", "Chênh lệch dưới 1–2 điểm chưa nên diễn giải mạnh (chỉ một seed)", "Cao hơn nhiều so với 30–54% của giai đoạn trước"], size=17, gap=12)
 takeaway(s, "Đây mới là hiệu năng trong miền; kiểm tra ngoài miền ở các slide sau.", 6.4)
-notes(s, "Trên tập test cùng nguồn với dữ liệu huấn luyện, mô hình chỉ Kaggle đạt 93,7 phần trăm, mô hình chỉ Mendeley đạt 95,4, và mô hình gộp đạt 94,7 trên Kaggle và 94,0 trên Mendeley, tổng 94,5 phần trăm. Đây là mức cao hơn nhiều so với giai đoạn trước. Tuy nhiên nhóm chỉ chạy một seed, nên chênh lệch dưới một đến hai điểm giữa các mô hình chưa nên diễn giải mạnh. Và quan trọng, đây mới chỉ là hiệu năng trong miền.")
+notes(s, "Trên tập test cùng nguồn với dữ liệu huấn luyện, mô hình chỉ Kaggle đạt 93,7 phần trăm, mô hình chỉ Mendeley đạt 96,1, và mô hình gộp đạt 94,7 trên Kaggle và 94,0 trên Mendeley, tổng 94,5 phần trăm. Đây là mức cao hơn nhiều so với giai đoạn trước. Tuy nhiên nhóm chỉ chạy một seed, nên chênh lệch dưới một đến hai điểm giữa các mô hình chưa nên diễn giải mạnh. Và quan trọng, đây mới chỉ là hiệu năng trong miền.")
 
 # ================= 10. CONFUSION =================
 s = new("04 · KẾT QUẢ", "Mô hình gộp nhầm ở đâu")
@@ -266,8 +266,8 @@ col_chart(s, 5.4, 1.85, 7.3, 4.3, ["Algal", "Blight", "Healthy", "Phomopsis"],
           [("Mendeley → Kaggle", [round(100 * cd["mendeley_model_on_kaggle"]["per_class"][k], 0) for k in ("Algal", "Blight", "Healthy", "Phomopsis")]),
            ("Kaggle → Mendeley", [round(100 * cd["kaggle_model_on_mendeley"]["per_class"][k], 0) for k in ("Algal", "Blight", "Healthy", "Phomopsis")])],
           [RED, AMBER], "Tỷ lệ đúng theo lớp (%)", 0, 115, '0', legend=True, gap=50)
-takeaway(s, "Mô hình Mendeley gán Blight cho gần hết ảnh Kaggle: 95,4% trong miền nhưng chỉ 32,0% khi đổi nguồn.", 6.4)
-notes(s, "Đây là kết quả quan trọng nhất. Nhóm huấn luyện trên một nguồn rồi kiểm tra trên nguồn còn lại, chỉ với bốn lớp chung và đã loại ảnh Blight trùng. Mô hình huấn luyện trên Mendeley chỉ đạt 32 phần trăm trên ảnh Kaggle, dù đạt 95,4 phần trăm trên ảnh Mendeley. Nó gán nhãn Blight cho gần như mọi ảnh, ví dụ 806 trên 976 ảnh Healthy bị gán Blight. Chiều ngược lại, huấn luyện Kaggle và test Mendeley đạt 76,2 phần trăm, tốt hơn vì Kaggle đa dạng hơn, nhưng Blight chỉ 57 và Phomopsis 45 phần trăm. Như vậy con số 95 phần trăm trong miền không nói lên độ chính xác thực tế.")
+takeaway(s, "Mô hình Mendeley gán Blight cho gần hết ảnh Kaggle: 96,1% trong miền nhưng chỉ 32,0% khi đổi nguồn.", 6.4)
+notes(s, "Đây là kết quả quan trọng nhất. Nhóm huấn luyện trên một nguồn rồi kiểm tra trên nguồn còn lại, chỉ với bốn lớp chung và đã loại ảnh Blight trùng. Mô hình huấn luyện trên Mendeley chỉ đạt 32 phần trăm trên ảnh Kaggle, dù đạt 96,1 phần trăm trên ảnh Mendeley. Nó gán nhãn Blight cho gần như mọi ảnh, ví dụ 806 trên 976 ảnh Healthy bị gán Blight. Chiều ngược lại, huấn luyện Kaggle và test Mendeley đạt 76,2 phần trăm, tốt hơn vì Kaggle đa dạng hơn, nhưng Blight chỉ 57 và Phomopsis 45 phần trăm. Như vậy con số 94 đến 96 phần trăm trong miền không nói lên độ chính xác thực tế.")
 
 # ================= 12. WHY =================
 s = new("04 · KẾT QUẢ", "Vì sao: ảnh hai bộ khác phong cách chụp")
@@ -328,12 +328,12 @@ notes(s, "Hướng phát triển chính theo gợi ý của thầy là học bá
 
 # ================= 18. CONCLUSION =================
 s = new("07 · KẾT LUẬN", "Kết luận", dark=True)
-ks = [("93–95%", "trong miền sau khi thu gọn về lá sầu riêng, so với 30–54% trước"), ("95% → 32%", "khi mô hình học một nguồn gặp ảnh nguồn khác"), ("1 mô hình, 7 lớp", "gộp hai bộ đạt 94–95% trên cả hai nguồn")]
+ks = [("93–96%", "trong miền sau khi thu gọn về lá sầu riêng, so với 30–54% trước"), ("96% → 32%", "khi mô hình học một nguồn gặp ảnh nguồn khác"), ("1 mô hình, 7 lớp", "gộp hai bộ đạt 94–95% trên cả hai nguồn")]
 for i, (big, small) in enumerate(ks):
     x = .6 + i * 4.1
     box(s, x, 1.95, 3.85, 3.3, "21533A"); text(s, x + .3, 2.3, 3.3, .9, big, 32 if i != 2 else 28, True, "FFD54F", HF); text(s, x + .3, 3.5, 3.3, 1.6, small, 17, False, WHITE)
 text(s, .6, 5.75, 12.1, .9, "Bước tiếp theo: thêm nguồn dữ liệu, học bán giám sát trên ảnh chưa gán nhãn, và cơ chế loại ảnh ngoài phạm vi.", 18, False, "C8E6C9")
-notes(s, "Tóm lại, khi thu gọn về lá sầu riêng và huấn luyện trên dữ liệu sầu riêng, độ chính xác trong miền đạt 93 đến 95 phần trăm so với 30 đến 54 phần trăm trước đó. Nhưng phép thử ngoài miền cho thấy mô hình học một nguồn có thể giảm từ 95 xuống 32 phần trăm khi gặp ảnh nguồn khác, nên con số trong miền không nói lên độ chính xác thực tế. Gộp hai bộ giúp một mô hình bảy lớp đạt 94 đến 95 phần trăm trên cả hai nguồn. Các bước tiếp theo là thêm nguồn dữ liệu, học bán giám sát và cơ chế loại ảnh ngoài phạm vi.")
+notes(s, "Tóm lại, khi thu gọn về lá sầu riêng và huấn luyện trên dữ liệu sầu riêng, độ chính xác trong miền đạt 93 đến 96 phần trăm so với 30 đến 54 phần trăm trước đó. Nhưng phép thử ngoài miền cho thấy mô hình học một nguồn có thể giảm từ 96 xuống 32 phần trăm khi gặp ảnh nguồn khác, nên con số trong miền không nói lên độ chính xác thực tế. Gộp hai bộ giúp một mô hình bảy lớp đạt 94 đến 95 phần trăm trên cả hai nguồn. Các bước tiếp theo là thêm nguồn dữ liệu, học bán giám sát và cơ chế loại ảnh ngoài phạm vi.")
 
 # ================= 19. THANKS =================
 s = new("", "", dark=True)

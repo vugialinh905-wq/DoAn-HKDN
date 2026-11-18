@@ -28,7 +28,7 @@ ax[0].legend(); ax[1].legend(loc="lower right"); fig.tight_layout(); fig.savefig
 # 2. in-domain results
 fig, ax = plt.subplots(figsize=(7.5, 3.8))
 lab = ["Mô hình chỉ Kaggle\ntest Kaggle", "Mô hình chỉ Mendeley\ntest Mendeley", "Mô hình gộp\ntest Kaggle", "Mô hình gộp\ntest Mendeley"]
-v = [93.69, 95.43, 94.71, 93.96]
+v = [93.69, 96.06, 94.71, 93.96]
 b = ax.bar(lab, v, color=[GRN, AMB, TEAL, TEAL], width=.6)
 for x, y in zip(b, v):
     ax.text(x.get_x() + x.get_width() / 2, y + .3, f"{y:.1f}%".replace(".", ","), ha="center", fontweight="bold")
@@ -78,7 +78,8 @@ def cm(mat, labels, name, title, row_labels=None):
 
 C5, C6, C7 = base["classes"], mend["classes"], merg["classes"]
 cm(base["test"]["confusion"], C5, "cm_kaggle", "Mô hình Kaggle, test Kaggle")
-cm(mend["test"]["confusion"], C6, "cm_mendeley", "Mô hình Mendeley, test Mendeley")
+mf = rj("mendeley_test_filtered.json")
+cm(mf["confusion"], C6, "cm_mendeley", "Mô hình Mendeley, test Mendeley")
 cm(merg["test_by_source"]["kaggle"]["confusion"], C7, "cm_merged_kaggle", "Mô hình gộp, test Kaggle")
 cm(merg["test_by_source"]["mendeley"]["confusion"], C7, "cm_merged_mendeley", "Mô hình gộp, test Mendeley")
 S4 = ["Algal", "Blight", "Healthy", "Phomopsis"]
@@ -98,17 +99,15 @@ ax[1].barh(md.index, md.values, color=AMB)
 ax[1].set(title=f"Mendeley: {int(md.sum()):,} ảnh".replace(",", "."), xlabel="Số ảnh"); ax[1].invert_yaxis()
 fig.tight_layout(); fig.savefig(f"{F}/dataset.png"); plt.close()
 
-# 7. Healthy comparison (can data/; neu khong co thi giu hinh da co)
-if os.path.isdir(os.path.join(R, "data")):
-    random.seed(1)
-    fig, ax = plt.subplots(2, 5, figsize=(10, 4.4))
-    for r, (nm, pat) in enumerate((("Mendeley – Healthy", "data/mendeley/test/Leaf_Healthy/*"), ("Kaggle – Healthy", "data/kaggle/test/HEALTHY_LEAF/*"))):
-        for c, p in enumerate(random.sample(glob.glob(os.path.join(R, pat)), 5)):
-            ax[r, c].imshow(Image.open(p).convert("RGB").resize((224, 224))); ax[r, c].axis("off")
-            if c == 0:
-                ax[r, c].set_title(nm, loc="left", fontsize=11, fontweight="bold")
-    fig.tight_layout(); fig.savefig(f"{F}/healthy_compare.png"); plt.close()
-
+# 7. Healthy comparison
+random.seed(1)
+fig, ax = plt.subplots(2, 5, figsize=(10, 4.4))
+for r, (nm, pat) in enumerate((("Mendeley – Healthy", "data/mendeley/test/Leaf_Healthy/*"), ("Kaggle – Healthy", "data/kaggle/test/HEALTHY_LEAF/*"))):
+    for c, p in enumerate(random.sample(glob.glob(os.path.join(R, pat)), 5)):
+        ax[r, c].imshow(Image.open(p).convert("RGB").resize((224, 224))); ax[r, c].axis("off")
+        if c == 0:
+            ax[r, c].set_title(nm, loc="left", fontsize=11, fontweight="bold")
+fig.tight_layout(); fig.savefig(f"{F}/healthy_compare.png"); plt.close()
 
 # 8. pipeline diagram
 fig, ax = plt.subplots(figsize=(10, 2.6)); ax.axis("off"); ax.set_xlim(0, 10); ax.set_ylim(0, 2.6)
