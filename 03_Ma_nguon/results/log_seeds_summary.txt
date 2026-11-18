@@ -1,0 +1,9 @@
+42 kaggle 94.71% mendeley 93.96% tong 94.48% F1 0.939 best_val 95.37%
+43 kaggle 94.82% mendeley 95.54% tong 95.04% F1 0.946 best_val 95.85%
+44 kaggle 94.71% mendeley 95.54% tong 94.96% F1 0.946 best_val 96.59%
+45 kaggle 94.93% mendeley 95.01% tong 94.96% F1 0.944 best_val 95.37%
+kaggle    94.79 +- 0.11 (n=4)
+mendeley  95.01 +- 0.74 (n=4)
+tong      94.86 +- 0.25 (n=4)
+macro_f1  94.38 +- 0.35 (n=4)
+best_val  95.79 +- 0.58 (n=4)

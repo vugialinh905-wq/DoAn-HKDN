@@ -1,4 +1,4 @@
-"""Tao nhat ky su dung AI (giai doan lam lai, phien 43-55) theo mau cua AI_Development_Log_v2."""
+"""Tao nhat ky su dung AI (giai doan lam lai, phien 43-57) theo mau cua AI_Development_Log_v2."""
 import os
 from docx import Document
 from docx.shared import Pt, Cm
@@ -43,11 +43,11 @@ def table(header, rows, widths):
 
 
 P("NHẬT KÝ SỬ DỤNG CÔNG CỤ AI", True, "c", 15)
-P("(AI DEVELOPMENT LOG) – GIAI ĐOẠN LÀM LẠI, PHIÊN 43–55", True, "c", 12)
+P("(AI DEVELOPMENT LOG) – GIAI ĐOẠN LÀM LẠI, PHIÊN 43–57", True, "c", 12)
 P("Đề tài: Nhận dạng bệnh trên lá sầu riêng bằng học chuyển giao: huấn luyện trên hai bộ dữ liệu và đánh giá ngoài miền", align="c")
 P("Sinh viên thực hiện: Vũ Gia Linh (MSSV: 070305004702); Lê Ngọc Bích Loan (MSSV: 060305003162)")
-P("Công cụ AI sử dụng: " + TOOL + ". Công cụ có quyền đọc/ghi tệp và chạy lệnh trên máy của sinh viên trong thư mục được cấp.")
-P("Phạm vi ghi nhận: 14 phiên làm việc (Phiên 43–56) trong cuộc trò chuyện ngày 17–18/11/2026, tiếp nối nhật ký 42 phiên trước (AI_Development_Log_v2.docx).")
+P("Công cụ AI sử dụng: " + TOOL + " (Phiên 57: Claude Code trên claude.ai, model Claude Opus 5.5). Công cụ có quyền đọc/ghi tệp và chạy lệnh trên máy của sinh viên trong thư mục được cấp.")
+P("Phạm vi ghi nhận: 15 phiên làm việc (Phiên 43–57) trong các cuộc trò chuyện ngày 17–18/11/2026, tiếp nối nhật ký 42 phiên trước (AI_Development_Log_v2.docx).")
 P("Cách làm việc: sinh viên đặt mục tiêu, chọn hướng đi và ra từng lệnh; công cụ AI thực hiện phần soạn mã, chạy thực nghiệm và soạn thảo văn bản theo lệnh đó và báo kết quả để sinh viên quyết định bước tiếp theo. "
   "Cần nói rõ: toàn bộ mã nguồn mới, các biểu đồ và bản nháp báo cáo, slide trong giai đoạn này do công cụ AI soạn thảo và chạy; sinh viên chịu trách nhiệm về quyết định, nội dung nộp và phải tự kiểm tra lại (xem Phụ lục A).")
 P("Các prompt được chuẩn hóa về văn phong viết, giữ nguyên nội dung yêu cầu thực tế. Các ô [SV xác nhận] là việc chỉ sinh viên mới biết hoặc mới thực hiện được, cần tự điền trước khi nộp.", italic=True)
@@ -63,6 +63,8 @@ table(["Quyết định", "Nội dung"], [
     ["Q7", "Yêu cầu làm lại báo cáo và slide, bổ sung sơ đồ loss còn thiếu (Phiên 52)."],
     ["Q8", "Yêu cầu truy vết nguồn số liệu của biểu đồ (Phiên 53), gom thư mục nộp bài và rà soát phần còn thiếu (Phiên 54)."],
     ["Q9", "Giao công cụ AI hoàn thiện mục lục, soạn nhật ký AI và tạo kho GitHub; sinh viên tự làm các mục còn lại (Phiên 55)."],
+    ["Q10", "Dừng thí nghiệm bán giám sát sau nhánh đối chứng do hạn chế thời gian, ghi là việc dở dang (Phiên 56)."],
+    ["Q11", "Yêu cầu chạy tiếp hai nhánh bán giám sát trên máy mới, đưa kết quả vào báo cáo, slide, nhật ký và hỏi trước khi đẩy lên GitHub (Phiên 57)."],
 ], [2, 13.5])
 
 SESS = [
@@ -165,9 +167,18 @@ SESS.append(("Phiên 56 — Khoảng tin cậy, sửa lỗi số liệu và thí
   "Tính khoảng tin cậy Wilson 95% cho các accuracy đã báo cáo (chỉ phản ánh cỡ mẫu test, không phản ánh dao động giữa các lần huấn luyện). Phát hiện lỗi của công cụ: mô hình chỉ Mendeley ở Phiên 48 được test trên 394 ảnh thay vì 381 ảnh đã lọc; đánh giá lại cho 96,06% (macro F1 0,959) và sửa báo cáo, slide, biểu đồ. Thí nghiệm bán giám sát (4 lớp chung, huấn luyện Mendeley, 1.200 ảnh Kaggle không nhãn) chỉ chạy xong vòng 0 và nhánh đối chứng: Kaggle 35,0% (vòng 0), 35,0%, 36,7%, 40,3% (đối chứng vòng 1–3). Hai nhánh chính (tự gán nhãn và người gán lại) chưa chạy; 3 seed thêm chưa chạy.",
   "Q10: dừng thí nghiệm sau đối chứng vòng 3 do hạn chế thời gian; các phần chưa chạy ghi là việc dở dang, không đưa kết luận về hiệu quả của học bán giám sát vào báo cáo.",
   "Nhánh đối chứng tự thay đổi 5 điểm trên Kaggle dù không thêm dữ liệu, cho thấy dao động giữa các vòng huấn luyện đáng kể. [SV xác nhận] đã đọc lại kết quả và đồng ý với quyết định dừng."))
-for title, date, goal, prompt, files, result, dec, ver in SESS:
+SESS.append(("Phiên 57 — Chạy hai nhánh bán giám sát còn thiếu và đưa kết quả vào báo cáo, slide", "18/11/2026",
+  "Chạy tiếp thí nghiệm học bán giám sát dở dang ở Phiên 56 (nhánh tự gán nhãn và nhánh người gán lại), rồi đưa kết quả thật vào báo cáo, slide và nhật ký.",
+  "Sinh viên dán lời nhắc bàn giao của Phiên 56; yêu cầu đọc hướng dẫn trên kho GitHub vì máy mới không còn đường dẫn C:\\Users\\Dell; hỏi phải sửa đường dẫn thế nào khi bài nằm ở chỗ khác; gửi hai tệp zip (dữ liệu bàn giao gồm data/, manifest.csv, semisup_round0.pt, và bản xuất phiên trước) và yêu cầu clone kho về máy, chạy tiếp phần còn thiếu, làm tiếp bài, hỏi trước khi đẩy lên GitHub.",
+  "semisup.py (không sửa), results/semisup_result.json, results/semisup_control_rerun.json (mới), results/merged_s43/44/45_result.json và merged_seeds.json (mới), seeds_summary.py và CHAY_3_SEED.bat (mới), report/build_fig_semisup.py (mới), report/build_report.py, report/build_slides.py, report/build_ailog.py.",
+  "Công cụ trả lời rằng mã nguồn dùng đường dẫn tương đối nên không cần sửa mã, chỉ cần đặt data/ trong 03_Ma_nguon hoặc đặt biến DATA_DIR. Clone kho vào Documents trên máy sinh viên; chạy thí nghiệm trên máy ảo đám mây của công cụ (CPU 2 nhân, torch 2.15) vì máy ảo cục bộ yếu hơn. Mạng chặn tải trọng số ImageNet nên công cụ dựng mô hình với weights=None rồi nạp semisup_round0.pt (toàn bộ 314 tham số), vòng 0 khớp đúng số cũ (Kaggle 35,04%, Mendeley 98,86%). Kết quả trên Kaggle test qua 3 vòng: tự gán nhãn 31,5% → 28,4% → 27,4% (nhãn giả đúng 58,5% → 38,0% → 30,6%); người gán lại 62,0% → 73,3% → 81,1% (khoảng tin cậy 78,1–83,9%); Mendeley test giữ 98,5–99,6%. Công cụ đề xuất và chạy thêm nhánh đối chứng lần 2 trên cùng máy: 36,5% → 29,1% → 33,2%, cho thấy đối chứng tự dao động khoảng 29–40%. Thêm Mục 5.6, 2 bảng, 1 hình vào báo cáo; thêm slide 16 (tổng 20 slide); sửa phần hạn chế, hướng phát triển, kết luận; sửa lỗi còn sót ở Kết luận (95,4% → 96,1% cho mô hình chỉ Mendeley). Sau đó, theo yêu cầu \"chạy trên máy mình\", công cụ chép dữ liệu (7.032 ảnh, đối chiếu checksum) vào bản clone trên máy sinh viên, viết CHAY_3_SEED.bat và seeds_summary.py, mở File Explorer và chạy tệp bat trên Windows (Python 3.12, torch 2.15 CPU, khoảng 5,5 phút/epoch). Mô hình gộp, seed 43/44/45, accuracy tính chung: 95,04%, 94,96%, 94,96%; cùng seed 42 gốc: Kaggle 94,79 ± 0,11%, Mendeley 95,01 ± 0,74%, tính chung 94,86 ± 0,25%, macro F1 0,944 ± 0,004 (n = 4). Seed 42 thấp nhất trên Mendeley (93,96%). Báo cáo thêm Bảng 9, sửa phần giới hạn về số seed; slide 9 và 17 cập nhật.",
+  "Q11: sinh viên yêu cầu chạy tiếp và làm tiếp bài, hỏi trước khi đẩy lên GitHub. Báo cáo ghi rõ người gán lại là mô phỏng bằng nhãn có sẵn, mỗi nhánh chạy một lần và chưa có nhánh gán nhãn ngẫu nhiên, nên không kết luận cách chọn ảnh khó là nguyên nhân của mức tăng. Sinh viên yêu cầu chạy 3 seed ngay trên máy mình. [SV xác nhận] đồng ý với cách diễn giải kết quả bán giám sát và kết quả 4 seed.",
+  "Đối chiếu số trong báo cáo và slide với results/semisup_result.json và results/semisup_control_rerun.json; xuất báo cáo và slide sang PDF để xem trang mới. Mục lục và danh mục hình, bảng cần cập nhật lại trong Word (chuột phải → Update Field). [SV xác nhận] đã mở báo cáo, cập nhật mục lục và đọc lại Mục 5.6.",
+  "Claude Code trên claude.ai (phiên đám mây nối với máy sinh viên), model Claude Opus 5.5 (claude-opus-5-5)"))
+for e in SESS:
+    title, date, goal, prompt, files, result, dec, ver = e[:8]
     P(title, True, size=13)
-    L("Công cụ", TOOL); L("Ngày", date); L("Mục tiêu", goal); L("Prompt đã sử dụng", prompt)
+    L("Công cụ", e[8] if len(e) > 8 else TOOL); L("Ngày", date); L("Mục tiêu", goal); L("Prompt đã sử dụng", prompt)
     L("Tệp mã nguồn liên quan", files); L("Kết quả công cụ AI trả về", result)
     L("Quyết định và chỉnh sửa của sinh viên", dec); L("Cách kiểm thử và xác minh", ver)
     L("Commit tương ứng", C1 + " (kho DoAn-TTTN-V2-Durian-Leaf)")
@@ -185,8 +196,10 @@ table(["Tệp", "Chức năng"], [
     ["train_base.py", "Huấn luyện MobileNetV2 theo ba cấu hình (kaggle, mendeley, merged), có checkpoint tự tiếp tục."],
     ["eval_cross_domain.py", "Kiểm tra ngoài miền hai chiều trên 4 lớp chung."],
     ["eval_fewshot.py", "Đánh giá few-shot 1/5/10 mẫu trên Mendeley."],
+    ["semisup.py", "Thí nghiệm học bán giám sát: đối chứng, tự gán nhãn, người gán lại (mô phỏng)."],
+    ["seeds_summary.py, CHAY_3_SEED.bat", "Chạy mô hình gộp với seed 43, 44, 45 và tính trung bình ± độ lệch chuẩn cùng seed 42."],
     ["demo/streamlit_app.py", "Ứng dụng minh họa dùng mô hình gộp 7 lớp."],
-    ["report/build_figures.py, build_report.py, build_slides.py", "Dựng biểu đồ, báo cáo, slide từ results/."],
+    ["report/build_figures.py, build_fig_semisup.py, build_report.py, build_slides.py", "Dựng biểu đồ, báo cáo, slide từ results/."],
     ["report/build_ailog.py", "Dựng nhật ký này."],
 ], [6, 9.5])
 d.save(OUT); print("saved", OUT)

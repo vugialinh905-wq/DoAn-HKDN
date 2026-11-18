@@ -11,6 +11,9 @@ HERE = os.path.dirname(os.path.abspath(__file__)); R = os.path.dirname(HERE); FI
 OUT = os.path.join(HERE, "Slide_TTTN_V2.pptx")
 rj = lambda n: json.load(open(os.path.join(R, "results", n), encoding="utf8"))
 base, mend, merg, cd, fs = rj("base_result.json"), rj("mendeley_result.json"), rj("merged_result.json"), rj("cross_domain_result.json"), rj("fewshot_result.json")
+ss, ssr = rj("semisup_result.json"), rj("semisup_control_rerun.json")
+SD = rj("merged_seeds.json")["summary"]
+msd = lambda k: "%s ± %s%%" % (("%.1f" % (100 * SD[k]["mean"])).replace(".", ","), ("%.1f" % (100 * SD[k]["std"])).replace(".", ","))
 
 c = lambda h: RGBColor.from_string(h)
 DARK, GREEN, LIGHT, AMBER, TEAL, RED, INK, MUTED, WHITE, GRAY = "173F2A", "2E7D32", "F1F8E9", "F9A825", "00838F", "C62828", "1F2933", "5F6B73", "FFFFFF", "78909C"
@@ -18,7 +21,7 @@ HF, BF = "Cambria", "Calibri"
 
 prs = Presentation(); prs.slide_width, prs.slide_height = Inches(13.333), Inches(7.5)
 BLANK = prs.slide_layouts[6]
-TOTAL = 19
+TOTAL = 20
 num = [0]
 
 
@@ -247,9 +250,9 @@ notes(s, "Đây là biểu đồ loss huấn luyện của ba mô hình. Bên tr
 s = new("04 · KẾT QUẢ", "Trong miền: 93–96% trên tập test cùng nguồn")
 col_chart(s, .6, 1.85, 7.4, 4.4, ["Chỉ Kaggle\ntest Kaggle", "Chỉ Mendeley\ntest Mendeley", "Gộp\ntest Kaggle", "Gộp\ntest Mendeley"], [("Accuracy", [93.7, 96.1, 94.7, 94.0])],
           [GREEN], None, 80, 100, '0.0"%"', vary=[GREEN, AMBER, TEAL, TEAL], ytitle="Accuracy (%)")
-bullets(s, 8.4, 2.0, 4.3, 4.0, ["Cả ba mô hình đạt 93–96% trên ảnh cùng nguồn", "Mô hình gộp: 94,5% tổng, macro F1 0,939", "Chênh lệch dưới 1–2 điểm chưa nên diễn giải mạnh (chỉ một seed)", "Cao hơn nhiều so với 30–54% của giai đoạn trước"], size=17, gap=12)
+bullets(s, 8.4, 2.0, 4.3, 4.0, ["Cả ba mô hình đạt 93–96% trên ảnh cùng nguồn", "Mô hình gộp: 94,5% tổng, macro F1 0,939", "Gộp qua 4 seed: " + msd("tong") + " tổng (trung bình ± độ lệch chuẩn)", "Cao hơn nhiều so với 30–54% của giai đoạn trước"], size=17, gap=12)
 takeaway(s, "Đây mới là hiệu năng trong miền; kiểm tra ngoài miền ở các slide sau.", 6.4)
-notes(s, "Trên tập test cùng nguồn với dữ liệu huấn luyện, mô hình chỉ Kaggle đạt 93,7 phần trăm, mô hình chỉ Mendeley đạt 96,1, và mô hình gộp đạt 94,7 trên Kaggle và 94,0 trên Mendeley, tổng 94,5 phần trăm. Đây là mức cao hơn nhiều so với giai đoạn trước. Tuy nhiên nhóm chỉ chạy một seed, nên chênh lệch dưới một đến hai điểm giữa các mô hình chưa nên diễn giải mạnh. Và quan trọng, đây mới chỉ là hiệu năng trong miền.")
+notes(s, "Trên tập test cùng nguồn với dữ liệu huấn luyện, mô hình chỉ Kaggle đạt 93,7 phần trăm, mô hình chỉ Mendeley đạt 96,1, và mô hình gộp đạt 94,7 trên Kaggle và 94,0 trên Mendeley, tổng 94,5 phần trăm. Đây là mức cao hơn nhiều so với giai đoạn trước. " + "Nhóm chạy lại mô hình gộp với bốn seed, được " + msd("kaggle") + " trên Kaggle và " + msd("mendeley") + " trên Mendeley, tức là riêng việc đổi seed đã làm kết quả dao động như vậy; hai mô hình đơn nguồn chỉ chạy một seed, nên chênh lệch dưới một đến hai điểm giữa các mô hình chưa nên diễn giải mạnh. Và quan trọng, đây mới chỉ là hiệu năng trong miền.")
 
 # ================= 10. CONFUSION =================
 s = new("04 · KẾT QUẢ", "Mô hình gộp nhầm ở đâu")
@@ -305,26 +308,36 @@ bullets(s, 8.6, 2.0, 4.1, 4.0, ["Thử trên 600 ảnh sầu riêng và 15 ảnh
 takeaway(s, "Chỉ dùng demo với ảnh lá sầu riêng; muốn loại ảnh lạ cần thêm lớp \"khác\" hoặc bộ phát hiện riêng.", 6.4)
 notes(s, "Nhóm đo thử ngưỡng độ tin cậy để loại ảnh không phải lá sầu riêng. Trên 600 ảnh sầu riêng và 15 ảnh lá ớt, cà chua, ở ngưỡng 0,7 ứng dụng giữ 90 phần trăm ảnh sầu riêng nhưng chỉ loại được khoảng 27 phần trăm ảnh lá cây khác, tức 4 trên 15 ảnh. Nhiều ảnh lá cây khác vẫn được gán bệnh với độ tin cậy trên 0,9. Số ảnh ngoài phạm vi chỉ 15 nên con số mang tính tham khảo. Kết luận là ngưỡng softmax không đủ tin cậy, demo chỉ nên dùng với ảnh lá sầu riêng.")
 
+# ================= 16. SEMI-SUPERVISED =================
+s = new("05 · THÍ NGHIỆM BỔ SUNG", "Tự gán nhãn không đủ; có người gán lại thì tăng rõ")
+k = lambda rows: [round(100 * ss["round0"]["kaggle"]["acc"], 1)] + [round(100 * r["kaggle"]["acc"], 1) for r in rows]
+line_chart(s, .6, 1.85, 7.6, 4.4, ["Vòng 0", "Vòng 1", "Vòng 2", "Vòng 3"],
+           [("Người gán lại", k(ss["human"])), ("Đối chứng (lần 1)", k(ss["control"])), ("Đối chứng (lần 2)", k(ssr["control"])), ("Tự gán nhãn", k(ss["pseudo"]))],
+           [TEAL, GRAY, "B0BEC5", RED], "Accuracy trên Kaggle test (705 ảnh, 4 lớp), %", 20, 90, '0', "Accuracy (%)", 10)
+bullets(s, 8.6, 2.0, 4.1, 4.2, ["Có nhãn: 1.256 ảnh Mendeley; không nhãn: 1.200 ảnh Kaggle", "Đối chứng tự dao động 29–40% nên so với khoảng này", "Tự gán nhãn: nhãn giả đúng giảm 58% → 31%, accuracy còn 27,4%", "Người gán lại 150 ảnh khó/vòng: 35,0% → 81,1%; Mendeley giữ 98–99%"], size=15, gap=10)
+takeaway(s, "Mô phỏng bằng nhãn có sẵn, chạy một lần; một phần mức tăng đến từ 450 ảnh có nhãn được thêm.", 6.4)
+notes(s, "Theo gợi ý của thầy, nhóm thử học bán giám sát ở chiều khó nhất: huấn luyện trên Mendeley, cải thiện trên Kaggle. Dữ liệu có nhãn là 1.256 ảnh Mendeley, dữ liệu không nhãn là 1.200 ảnh Kaggle, bốn lớp chung, ba vòng. Nhánh đối chứng chỉ huấn luyện thêm trên dữ liệu có nhãn và chạy hai lần, cho 40,3 và 33,2 phần trăm ở vòng ba, nghĩa là riêng việc huấn luyện thêm đã dao động khoảng 29 đến 40 phần trăm. Nhánh tự gán nhãn chỉ giữ dự đoán có độ tin cậy từ 0,9: vì mô hình gốc chỉ đúng 35 phần trăm trên Kaggle, nhãn giả chỉ đúng 58 phần trăm ở vòng một rồi giảm còn 31 phần trăm, và accuracy còn 27,4 phần trăm, tức là không giúp. Nhánh người gán lại thêm mỗi vòng 150 ảnh có độ tin cậy thấp nhất với nhãn đúng: accuracy tăng lên 62, 73 rồi 81,1 phần trăm, trong khi trên Mendeley vẫn giữ 98 đến 99 phần trăm. Cần lưu ý đây là mô phỏng, nhãn đúng lấy từ bộ Kaggle, mỗi nhánh chạy một lần, và sau ba vòng đã dùng 450 ảnh có nhãn của miền đích, nên chưa tách được phần đóng góp của cách chọn ảnh khó; nhóm chưa chạy nhánh gán nhãn ngẫu nhiên để so sánh.")
+
 # ================= 16. LIMITS =================
 s = new("06 · HẠN CHẾ", "Những điều số liệu chưa chứng minh")
-items = [("Chưa có nguồn thứ ba", "Mô hình gộp chưa được kiểm tra ngoài hai bộ đã huấn luyện."), ("Một seed, CPU", "Chưa có khoảng tin cậy giữa các lần huấn luyện."),
-         ("Chưa ghi loss validation", "Khó kết luận quá khớp bằng đường cong."), ("Giả thuyết ánh sáng", "Chưa kiểm chứng riêng bằng chuẩn hóa màu hay phân tích vùng ảnh."),
+items = [("Chưa có nguồn thứ ba", "Mô hình gộp chưa được kiểm tra ngoài hai bộ đã huấn luyện."), ("Ít seed, CPU", "Chỉ mô hình gộp chạy 4 seed; các phần khác một lần."),
+         ("Chưa ghi loss validation", "Khó kết luận quá khớp bằng đường cong."), ("Học bán giám sát", "Người gán lại là mô phỏng, chạy một lần, thiếu nhánh gán ngẫu nhiên."),
          ("Nhãn và lớp", "Allocaridara là côn trùng; hai lớp chỉ có một nguồn."), ("Ảnh ngoài phạm vi", "Ngưỡng độ tin cậy không đủ tin cậy.")]
 for i, (t1, t2) in enumerate(items):
     x = .6 + (i % 2) * 6.2; y = 1.9 + (i // 2) * 1.5
     box(s, x, y, 5.9, 1.3, LIGHT); text(s, x + .25, y + .17, 5.4, .4, t1, 17, True, GREEN); text(s, x + .25, y + .65, 5.4, .6, t2, 15, False, INK)
-notes(s, "Nhóm nêu rõ những giới hạn. Chưa có nguồn dữ liệu thứ ba để kiểm tra mô hình gộp ngoài miền. Mọi kết quả chỉ một seed trên CPU nên chưa có khoảng tin cậy giữa các lần huấn luyện. Chưa ghi loss validation. Giả thuyết về ánh sáng chưa được kiểm chứng riêng. Allocaridara là tổn thương do côn trùng, và hai lớp Colletotrichum, Rhizoctonia chỉ có một nguồn. Cuối cùng ngưỡng độ tin cậy không loại được ảnh ngoài phạm vi.")
+notes(s, "Nhóm nêu rõ những giới hạn. Chưa có nguồn dữ liệu thứ ba để kiểm tra mô hình gộp ngoài miền. Chỉ mô hình gộp được chạy bốn seed; các mô hình và thí nghiệm khác chỉ chạy một lần trên CPU. Chưa ghi loss validation. Thí nghiệm học bán giám sát dùng nhãn có sẵn để mô phỏng người gán, mỗi nhánh chạy một lần và thiếu nhánh gán nhãn ngẫu nhiên để so sánh; giả thuyết về ánh sáng cũng chưa được kiểm chứng riêng. Allocaridara là tổn thương do côn trùng, và hai lớp Colletotrichum, Rhizoctonia chỉ có một nguồn. Cuối cùng ngưỡng độ tin cậy không loại được ảnh ngoài phạm vi.")
 
 # ================= 17. FUTURE =================
-s = new("06 · HƯỚNG PHÁT TRIỂN", "Học bán giám sát: huấn luyện lặp trên ảnh chưa gán nhãn")
+s = new("06 · HƯỚNG PHÁT TRIỂN", "Học bán giám sát: vòng lặp cần người kiểm tra nhãn")
 cyc = [("1  Huấn luyện", "Mô hình hiện có", GREEN), ("2  Dự đoán", "Trên ảnh sầu riêng chưa gán nhãn", TEAL), ("3  Kiểm tra", "Giữ dự đoán tin cậy cao, sửa nhãn sai", AMBER), ("4  Huấn luyện lại", "Thêm ảnh đã gán nhãn", GREEN)]
 for i, (t1, t2, col) in enumerate(cyc):
     x = .6 + i * 3.1
     box(s, x, 2.1, 2.75, 1.9, col); text(s, x + .2, 2.3, 2.35, .45, t1, 18, True, WHITE if col != AMBER else INK); text(s, x + .2, 2.9, 2.35, 1.0, t2, 15, False, WHITE if col != AMBER else INK)
     if i < 3: text(s, x + 2.72, 2.8, .4, .5, "→", 26, True, MUTED, align=PP_ALIGN.CENTER)
-bullets(s, .6, 4.5, 12.1, 1.7, ["Theo gợi ý của thầy: lặp lại để cải thiện độ chính xác thay vì dừng ở một mức", "Cần tập ảnh lá sầu riêng chưa gán nhãn đủ lớn (khó thu thập)", "Song song: thêm nguồn dữ liệu, chuẩn hóa màu, thêm lớp \"khác\" để loại ảnh ngoài phạm vi"], size=17, gap=10)
+bullets(s, .6, 4.5, 12.1, 1.7, ["Bước 3 là bắt buộc: không có người kiểm tra, nhãn giả sai dần (slide 16)", "Tiếp theo: so với gán nhãn ngẫu nhiên, nhiều seed, người gán thật trên ảnh vườn", "Song song: thêm nguồn dữ liệu, chuẩn hóa màu, thêm lớp \"khác\" để loại ảnh ngoài phạm vi"], size=17, gap=10)
 takeaway(s, "Kiểm tra ngoài miền nên dùng ảnh thực địa độc lập làm tập test.", 6.4)
-notes(s, "Hướng phát triển chính theo gợi ý của thầy là học bán giám sát. Dùng mô hình hiện có dự đoán trên một tập lớn ảnh lá sầu riêng chưa gán nhãn, giữ lại các dự đoán tin cậy cao, kiểm tra thủ công và sửa các dự đoán sai, rồi đưa lại vào huấn luyện và lặp lại, thay vì dừng ở một mức độ chính xác. Cách này cần một tập ảnh chưa gán nhãn đủ lớn, vốn khó thu thập. Song song nhóm sẽ thêm nguồn dữ liệu, chuẩn hóa màu và thêm lớp ngoài phạm vi, và nên dùng ảnh thực địa độc lập làm tập kiểm tra.")
+notes(s, "Hướng phát triển chính theo gợi ý của thầy là hoàn thiện vòng lặp học bán giám sát: dự đoán trên ảnh chưa gán nhãn, giữ dự đoán tin cậy cao, kiểm tra và sửa nhãn, rồi huấn luyện lại. Thí nghiệm ở slide trước cho thấy bước kiểm tra của con người là bắt buộc, vì nếu chỉ tự gán nhãn thì nhãn giả sai dần. Bước tiếp theo là so với việc gán nhãn ngẫu nhiên cùng số ảnh, chạy nhiều seed và dùng người gán thật trên ảnh vườn chưa gán nhãn. Song song nhóm sẽ thêm nguồn dữ liệu, chuẩn hóa màu và thêm lớp ngoài phạm vi, và nên dùng ảnh thực địa độc lập làm tập kiểm tra.")
 
 # ================= 18. CONCLUSION =================
 s = new("07 · KẾT LUẬN", "Kết luận", dark=True)
@@ -332,8 +345,8 @@ ks = [("93–96%", "trong miền sau khi thu gọn về lá sầu riêng, so v�
 for i, (big, small) in enumerate(ks):
     x = .6 + i * 4.1
     box(s, x, 1.95, 3.85, 3.3, "21533A"); text(s, x + .3, 2.3, 3.3, .9, big, 32 if i != 2 else 28, True, "FFD54F", HF); text(s, x + .3, 3.5, 3.3, 1.6, small, 17, False, WHITE)
-text(s, .6, 5.75, 12.1, .9, "Bước tiếp theo: thêm nguồn dữ liệu, học bán giám sát trên ảnh chưa gán nhãn, và cơ chế loại ảnh ngoài phạm vi.", 18, False, "C8E6C9")
-notes(s, "Tóm lại, khi thu gọn về lá sầu riêng và huấn luyện trên dữ liệu sầu riêng, độ chính xác trong miền đạt 93 đến 96 phần trăm so với 30 đến 54 phần trăm trước đó. Nhưng phép thử ngoài miền cho thấy mô hình học một nguồn có thể giảm từ 96 xuống 32 phần trăm khi gặp ảnh nguồn khác, nên con số trong miền không nói lên độ chính xác thực tế. Gộp hai bộ giúp một mô hình bảy lớp đạt 94 đến 95 phần trăm trên cả hai nguồn. Các bước tiếp theo là thêm nguồn dữ liệu, học bán giám sát và cơ chế loại ảnh ngoài phạm vi.")
+text(s, .6, 5.75, 12.1, .9, "Học bán giám sát có người gán lại: 35% → 81% trên Kaggle (mô phỏng). Tiếp theo: thêm nguồn dữ liệu, người gán thật, loại ảnh ngoài phạm vi.", 18, False, "C8E6C9")
+notes(s, "Tóm lại, khi thu gọn về lá sầu riêng và huấn luyện trên dữ liệu sầu riêng, độ chính xác trong miền đạt 93 đến 96 phần trăm so với 30 đến 54 phần trăm trước đó. Nhưng phép thử ngoài miền cho thấy mô hình học một nguồn có thể giảm từ 96 xuống 32 phần trăm khi gặp ảnh nguồn khác, nên con số trong miền không nói lên độ chính xác thực tế. Gộp hai bộ giúp một mô hình bảy lớp đạt 94 đến 95 phần trăm trên cả hai nguồn. Thí nghiệm học bán giám sát cho thấy tự gán nhãn không đủ, còn khi có người gán lại các ảnh khó thì accuracy trên Kaggle tăng từ 35 lên 81 phần trăm, dù đây mới là mô phỏng và chạy một lần. Các bước tiếp theo là thêm nguồn dữ liệu, người gán thật và cơ chế loại ảnh ngoài phạm vi.")
 
 # ================= 19. THANKS =================
 s = new("", "", dark=True)
